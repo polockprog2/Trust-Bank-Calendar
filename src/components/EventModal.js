@@ -26,10 +26,24 @@ export default function EventModal() {
   const [description, setDescription] = useState(
     selectedEvent ? selectedEvent.description : ""
   );
+  const [location, setLocation] = useState(
+    selectedEvent ? selectedEvent.location : ""
+  );
+  const [email, setEmail] = useState(
+    selectedEvent ? selectedEvent.email : ""
+  );
   const [selectedLabel, setSelectedLabel] = useState(
     selectedEvent
       ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
       : labelsClasses[0]
+  );
+  const [isTask, setIsTask] = useState(false); // Add state to handle task creation
+  const [reminder, setReminder] = useState(""); // Add state to handle reminder
+  const [startTime, setStartTime] = useState(
+    selectedEvent ? selectedEvent.startTime : ""
+  );
+  const [endTime, setEndTime] = useState(
+    selectedEvent ? selectedEvent.endTime : ""
   );
 
   function handleSubmit(e) {
@@ -37,9 +51,15 @@ export default function EventModal() {
     const calendarEvent = {
       title,
       description,
+      location,
+      email,
       label: selectedLabel,
       day: daySelected ? daySelected.valueOf() : multiDaySelection.map(day => day.valueOf()),
       id: selectedEvent ? selectedEvent.id : Date.now(),
+      isTask,
+      reminder,
+      startTime,
+      endTime,
     };
     if (selectedEvent) {
       dispatchCalEvent({ type: "update", payload: calendarEvent });
@@ -100,6 +120,27 @@ export default function EventModal() {
                 : multiDaySelection.map(day => day.format("dddd, MMMM DD")).join(", ")}
             </p>
             <span className="material-icons-outlined text-gray-400">
+              access_time
+            </span>
+            <div className="flex gap-x-2">
+              <input
+                type="time"
+                name="startTime"
+                placeholder="Start time"
+                value={startTime}
+                className="pt-3 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+              <input
+                type="time"
+                name="endTime"
+                placeholder="End time"
+                value={endTime}
+                className="pt-3 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+            <span className="material-icons-outlined text-gray-400">
               segment
             </span>
             <input
@@ -110,6 +151,28 @@ export default function EventModal() {
               required
               className="pt-3 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
               onChange={(e) => setDescription(e.target.value)}
+            />
+            <span className="material-icons-outlined text-gray-400">
+              location_on
+            </span>
+            <input
+              type="text"
+              name="location"
+              placeholder="Add location"
+              value={location}
+              className="pt-3 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+              onChange={(e) => setLocation(e.target.value)}
+            />
+            <span className="material-icons-outlined text-gray-400">
+              email
+            </span>
+            <input
+              type="email"
+              name="email"
+              placeholder="Add email"
+              value={email}
+              className="pt-3 border-0 text-gray-600 pb-2 w-full border-b-2 border-gray-200 focus:outline-none focus:ring-0 focus:border-blue-500"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <span className="material-icons-outlined text-gray-400">
               bookmark_border
@@ -129,6 +192,26 @@ export default function EventModal() {
                 </span>
               ))}
             </div>
+            <div className="flex items-center mt-4">
+              <input
+                type="checkbox"
+                checked={isTask}
+                onChange={() => setIsTask(!isTask)}
+                className="form-checkbox h-5 w-5 text-blue-600"
+              />
+              <span className="ml-2 text-gray-700">Is Task</span>
+            </div>
+            {isTask && (
+              <div className="mt-4">
+                <label className="block text-gray-700">Reminder</label>
+                <input
+                  type="datetime-local"
+                  value={reminder}
+                  onChange={(e) => setReminder(e.target.value)}
+                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                />
+              </div>
+            )}
           </div>
         </div>
         <footer className="flex justify-end border-t p-3 mt-5">

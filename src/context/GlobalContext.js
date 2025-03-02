@@ -20,6 +20,8 @@ const GlobalContext = React.createContext({
   filteredEvents: [],
   viewMode: "month",
   setViewMode: () => {},
+  multiDaySelection: [], // Add multi-day selection state
+  setMultiDaySelection: () => {}, // Add function to set multi-day selection
 });
 
 function savedEventsReducer(state, { type, payload }) {
@@ -27,7 +29,7 @@ function savedEventsReducer(state, { type, payload }) {
     case "push":
       return [...state, payload];
     case "update":
-      return payload; 
+      return state.map((evt) => (evt.id === payload.id ? payload : evt));
     case "delete":
       return state.filter((evt) => evt.id !== payload.id);
     default:
@@ -46,6 +48,7 @@ export function ContextWrapper({ children }) {
   const [viewMode, setViewMode] = useState("month");
   const [showEventModal, setShowEventModal] = useState(false);
   const [savedEvents, dispatchCalEvent] = useReducer(savedEventsReducer, [], initEvents);
+  const [multiDaySelection, setMultiDaySelection] = useState([]); // Initialize multi-day selection state
 
   useEffect(() => {
     localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
@@ -72,6 +75,8 @@ export function ContextWrapper({ children }) {
         filteredEvents: [],
         viewMode,
         setViewMode,
+        multiDaySelection, // Provide multi-day selection state
+        setMultiDaySelection, // Provide function to set multi-day selection
       }}
     >
       {children}

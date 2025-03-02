@@ -10,6 +10,8 @@ export default function Day({ day, rowIdx }) {
     setShowEventModal,
     filteredEvents,
     setSelectedEvent,
+    multiDaySelection,
+    setMultiDaySelection,
   } = useContext(GlobalContext);
 
   useEffect(() => {
@@ -27,13 +29,29 @@ export default function Day({ day, rowIdx }) {
   }
 
   function handleDayClick() {
-    setDaySelected(day);
-    setShowEventModal(true);
+    if (multiDaySelection.length > 0) {
+      setMultiDaySelection([...multiDaySelection, day]);
+    } else {
+      setDaySelected(day);
+      setShowEventModal(true);
+    }
+  }
+
+  function handleDayMouseDown() {
+    setMultiDaySelection([day]);
+  }
+
+  function handleDayMouseUp() {
+    if (multiDaySelection.length > 1) {
+      setShowEventModal(true);
+    }
   }
 
   return (
     <div
       className="border border-gray-200 flex flex-col"
+      onMouseDown={handleDayMouseDown}
+      onMouseUp={handleDayMouseUp}
       onClick={handleDayClick}
     >
       <header className="flex flex-col items-center">
