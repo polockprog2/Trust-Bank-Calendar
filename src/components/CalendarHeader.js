@@ -2,8 +2,7 @@ import dayjs from "dayjs";
 import React, { useContext } from "react";
 import logo from "../assets/trust.png";
 import GlobalContext from "../context/GlobalContext";
-import ViewSwitcherDropdown from "./ViewSwitcherDrodown";
-import ViewSwitcher from "./ViewSwitcher"; 
+import ViewSwitcherDropdown from "./ViewSwitcherDrodown"; 
 
 export default function CalendarHeader() {
   const { monthIndex, setMonthIndex, viewMode } = useContext(GlobalContext);
